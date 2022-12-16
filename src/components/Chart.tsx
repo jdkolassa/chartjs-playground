@@ -7,6 +7,8 @@ import {
   Legend,
   LineController,
   PointElement,
+  ChartOptions,
+  TimeScale,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { DateTime, Interval } from 'luxon';
@@ -20,6 +22,8 @@ const returnLabels = (): string[] => {
   for (let i = 1; i < length; i++) {
     labels.push(benchDate.plus({ months: i }).toFormat("MMM'.' yyyy"));
   }
+
+  return labels;
 };
 
 const generateRandomData = (): number[] => {
@@ -34,6 +38,7 @@ export default function Chart() {
   ChartJS.register([
     LinearScale,
     CategoryScale,
+    TimeScale,
     LineElement,
     Legend,
     LineController,
@@ -54,26 +59,39 @@ export default function Chart() {
     ],
   };
 
-  const options = {
-    label: 'Test',
+  const options1: ChartOptions = {
     responsive: true,
     scales: {
       y: {
         beginAtZero: true,
+        display: true,
         type: 'linear',
         position: 'left',
       },
       x: {
-        type: 'time',
+        type: 'category',
         display: true,
-        ticks: {
-          callback: function (val, index: number) {
-            return index % 3 === 0 ? val : '';
-          },
-        },
       },
     },
   };
 
-  return <Line options={options} data={data} />;
+  const options2 = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Line Chart',
+      },
+    },
+    scales: {
+      x: {
+        type: 'category',
+      },
+    },
+  };
+
+  return <Line options={options1} data={data} />;
 }
