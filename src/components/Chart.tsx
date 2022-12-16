@@ -9,72 +9,71 @@ import {
   PointElement,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { DateTime, Interval } from 'luxon';
 
-const labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-
-console.log('Label length: ', labels.length);
-
-const createTrendLine = (
-  startValue: number,
-  target: number,
-  length: number
-) => {
-  // Target should be something like "2" or "35" and we need to convert that to percentage
-  const pTarget: number = target * 0.01;
-  // Now we multiply the startValue by the pTarget to get our finalValue
-  const finalValue: number = startValue * pTarget;
-
-  // Now let's create the array to store our data
-  const dataValues: number[] = Array(length);
-  dataValues[0] = startValue;
-  dataValues[dataValues.length] = finalValue;
-  const reducer = (startValue - finalValue) / (dataValues.length - 2);
-
-  console.log('dataValues length: ', dataValues.length);
-
-  // Now let's run the calculations!
-  let workingValue = startValue;
-  for (let i = 1; i < dataValues.length - 1; i++) {
-    let thisValue = workingValue - reducer;
-    console.log('thisValue: ', thisValue);
-    if (thisValue > startValue || thisValue < finalValue) {
-      throw new Error('Out of bounds error, please check script');
-    } else {
-      dataValues[i] = thisValue;
-      workingValue = thisValue;
-    }
-  }
-
-  if (dataValues.every((v) => v != undefined)) {
-    return dataValues;
-  } else {
-    throw new Error('Undefined values in dataValues array');
+const returnLabels = (): string[] => {
+  const today = DateTime.now();
+  const benchDate = DateTime.fromFormat('2019-12', 'yyyy-MM');
+  const interval = Interval.fromDateTimes(benchDate, today);
+  const length = Math.floor(interval.length('months'));
+  let labels: string[] = [];
+  for (let i = 1; i < length; i++) {
+    labels.push(benchDate.plus({ months: i }).toFormat("MMM'.' yyyy"));
   }
 };
 
+const generateRandomData = (): number[] => {
+  let rando: number[] = [];
+  for (let i = 0; i < 36; i++) {
+    rando.push(Math.random() * 10);
+  }
+  return rando;
+};
+
 export default function Chart() {
-  ChartJS.register(
+  ChartJS.register([
     LinearScale,
     CategoryScale,
     LineElement,
     Legend,
     LineController,
-    PointElement
-  );
+    PointElement,
+  ]);
+  const labels = returnLabels();
+  const numData = generateRandomData();
 
-  const trendData = createTrendLine(100, 30, labels.length);
   const data = {
     labels,
     datasets: [
       {
-        label: 'Trendline test',
-        data: trendData,
-        fill: false,
-        borderColor: 'rgb(255, 0, 0)',
-        tension: 0.1,
+        label: 'Test Set',
+        data: numData,
+        borderColor: 'turquoise',
+        backgroundColor: 'navy',
       },
     ],
   };
 
-  return <Line data={data} />;
+  const options = {
+    label: 'Test',
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        type: 'linear',
+        position: 'left',
+      },
+      x: {
+        type: 'time',
+        display: true,
+        ticks: {
+          callback: function (val, index: number) {
+            return index % 3 === 0 ? val : '';
+          },
+        },
+      },
+    },
+  };
+
+  return <Line options={options} data={data} />;
 }
