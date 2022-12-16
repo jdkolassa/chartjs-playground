@@ -1,0 +1,43 @@
+{
+  "labels": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ],
+  "datasets": [
+    {
+      "type": "line",
+      "id": "baseline",
+      "label": "Baseline",
+      "data": [64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64],
+      "borderColor": "rgba(94, 143, 208, 1.0)",
+      "borderWidth": 2
+    },
+    {
+      "type": "line",
+      "id": "goaline",
+      "label": "Goal Line",
+      "data": [0.35],
+      "borderColor": "rgba(254, 119, 123, 1.0)",
+      "borderWidth": 2
+    },
+    {
+      "type": "bar",
+      "id": "values",
+      "label": "Values",
+      "data": [90, 49, 83, 36, 87, 61, 65, 80, 50, 92, 79, 62],
+      "backgroundColor": "rgb(137, 86, 255)",
+      "borderColor": "rgb(255, 206, 86)",
+      "borderWidth": 2
+    }
+  ]
+}
